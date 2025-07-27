@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  nextjs:
+    container_name: nextjs
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.next
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+
+  storybook:
+    container_name: storybook
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.storybook
+    ports:
+      - "6006:6006" 

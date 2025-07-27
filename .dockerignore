@@ -1,0 +1,15 @@
+node_modules
+.next
+.husky
+.git
+.gitignore
+test-results
+.jest-test-results.json
+storybook-static
+e2e
+playwright-report
+coverage
+infra
+docker-compose.yml
+
+

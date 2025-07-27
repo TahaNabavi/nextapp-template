@@ -1,0 +1,31 @@
+FROM node:24-alpine AS pnpm-installed
+
+WORKDIR /storybook
+RUN ["npm", "install", "-g", "pnpm@10.11.0"]
+RUN ["npm", "install", "-g", "live-server@1.2.2"]
+
+FROM pnpm-installed AS deps
+
+WORKDIR /storybook
+
+COPY package.json pnpm-lock.yaml ./
+
+RUN ["pnpm", "install", "--frozen-lockfile", "--ignore-scripts"]
+
+FROM pnpm-installed AS builder
+
+WORKDIR /storybook
+
+COPY . .
+COPY --from=deps /storybook/node_modules ./node_modules
+
+RUN ["pnpm", "test:generate-output"]
+RUN ["pnpm", "build-storybook"]
+
+FROM pnpm-installed AS deploy
+
+COPY --from=builder /storybook/storybook-static ./storybook-static
+
+EXPOSE 6006
+
+CMD ["npx", "live-server", "storybook-static", "--port=6006"] 
